@@ -114,6 +114,53 @@ button.addEventListener('click', consigli_musica);
 const risultati_canzoni=4; //scelgo di mostrare 4 canzoni
 
 /*-------------------------------------------------*/
+/*--------------GFYCAT-----------------------------*/
+/*Ogni volta che viene cliccata un'immagine per aprire il video Youtube, sotto esce la gif dei Maneskin che salutano*/
+function Imposto_Gif(json){
+  console.log(json);
+  
+  const gif=document.querySelector('#gif');
+  gif.innerHTML='';
+  const Thumbnail_for_gif = document.createElement('img');
+
+  Thumbnail_for_gif.src=json.gfyItem.gifUrl;
+  gif.appendChild(Thumbnail_for_gif);
+}
+
+function onToken4(json){
+  console.log(json)
+  token4=json.access_token;
+}
+
+function onResponse4(response){
+  return response.json();
+}
+
+function gif() {
+const client_id="2_ouJ2aw";
+const client_secret="gZZrJKh1L1iw6DmQsu_Arj3hUCAYUuFNR8r5S1IFpeW1RC1VEDn4Bx8InvoGlTsB";
+
+  const setup_body = {
+    client_id: client_id,
+    client_secret: client_secret,
+    grant_type: "client_credentials",
+  };
+
+  let body = JSON.stringify(setup_body);
+
+  fetch("https://api.gfycat.com/v1/oauth/token", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: body,
+  })
+    .then(onResponse4).then(onToken4);
+}
+
+let token4;
+gif();
+/*-------------------------------------------------*/
 /*-------------LAST FM-----------------------------*/
 
 function onJson(json) {
@@ -221,11 +268,18 @@ function onJson3(json){
   link.textContent = "Guarda su YouTube";
   Song_Title.textContent = items[0].title;
   Thumbnail.src = items[0].bestThumbnail.url;
-  Thumbnail.classList.add('imageFromYT');
   
   container_yt.appendChild(Thumbnail);
   container_yt.appendChild(Song_Title);
   container_yt.appendChild(link);
+
+  fetch("https://api.gfycat.com/v1/gfycats/shockedwideacornweevil", {
+    method: "get",
+    headers: {
+      Authorization: "Bearer " + token4,
+    },
+  })
+    .then(onResponse4).then(Imposto_Gif);
 }
 
 function onResponse3(response) {
